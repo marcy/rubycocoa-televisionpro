@@ -24,7 +24,7 @@
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
 				PBXFileTableDataSourceColumnWidthsKey = (
 					20,
-					341,
+					833,
 					20,
 					48,
 					43,
@@ -63,8 +63,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 253789074;
-			PBXWorkspaceStateSaveDate = 253789074;
+			PBXPerProjectTemplateStateSaveDate = 253969909;
+			PBXWorkspaceStateSaveDate = 253969909;
 		};
 		perUserProjectItems = {
 			695A0AA60ECFFFE200029CA2 /* PBXTextBookmark */ = 695A0AA60ECFFFE200029CA2 /* PBXTextBookmark */;
@@ -72,13 +72,14 @@
 			695A0AB00ED0012100029CA2 /* PBXTextBookmark */ = 695A0AB00ED0012100029CA2 /* PBXTextBookmark */;
 			695A0AB20ED0012100029CA2 /* PBXTextBookmark */ = 695A0AB20ED0012100029CA2 /* PBXTextBookmark */;
 			695A0AB30ED0012100029CA2 /* PlistBookmark */ = 695A0AB30ED0012100029CA2 /* PlistBookmark */;
-			695AEE4A0ECEACE900B0E725 /* PBXTextBookmark */ = 695AEE4A0ECEACE900B0E725 /* PBXTextBookmark */;
 			695AEE4C0ECEACE900B0E725 /* PBXTextBookmark */ = 695AEE4C0ECEACE900B0E725 /* PBXTextBookmark */;
+			697286B50F233980007DD0C4 /* PBXBookmark */ = 697286B50F233980007DD0C4 /* PBXBookmark */;
+			697286B60F233980007DD0C4 /* PBXBookmark */ = 697286B60F233980007DD0C4 /* PBXBookmark */;
+			69791B5F0F23461B0021D27E /* PBXTextBookmark */ = 69791B5F0F23461B0021D27E /* PBXTextBookmark */;
 			69DCCF7C0ECEADFB002CDEA6 /* PBXTextBookmark */ = 69DCCF7C0ECEADFB002CDEA6 /* PBXTextBookmark */;
 			69DCCF7E0ECEADFB002CDEA6 /* PBXTextBookmark */ = 69DCCF7E0ECEADFB002CDEA6 /* PBXTextBookmark */;
-			69DF49510F20887500FF2A4E /* PBXBookmark */ = 69DF49510F20887500FF2A4E /* PBXBookmark */;
 			69E81FA00F1C597300357E8D /* PlistBookmark */ = 69E81FA00F1C597300357E8D /* PlistBookmark */;
-			69E81FA90F1C5BE300357E8D /* PBXBookmark */ = 69E81FA90F1C5BE300357E8D /* PBXBookmark */;
+			69EA73430F2342CB003747C6 /* PBXTextBookmark */ = 69EA73430F2342CB003747C6 /* PBXTextBookmark */;
 		};
 		sourceControlManager = 695AEE100ECE86F700B0E725 /* Source Control */;
 		userBuildSettings = {
@@ -185,9 +186,9 @@
 	};
 	695AEE120ECE8B0E00B0E725 /* AppController.rb */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {519, 371}}";
-			sepNavSelRange = "{387, 0}";
-			sepNavVisRange = "{0, 70}";
+			sepNavIntBoundsRect = "{{0, 0}, {1011, 3174}}";
+			sepNavSelRange = "{4720, 0}";
+			sepNavVisRange = "{1049, 694}";
 		};
 	};
 	695AEE1B0ECE8E8400B0E725 /* get_program.rb */ = {
@@ -196,16 +197,6 @@
 			sepNavSelRange = "{5316, 0}";
 			sepNavVisRange = "{0, 144}";
 		};
-	};
-	695AEE4A0ECEACE900B0E725 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 695AEE120ECE8B0E00B0E725 /* AppController.rb */;
-		name = "AppController.rb: 24";
-		rLen = 0;
-		rLoc = 387;
-		rType = 0;
-		vrLen = 70;
-		vrLoc = 0;
 	};
 	695AEE4C0ECEACE900B0E725 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
@@ -216,6 +207,24 @@
 		rType = 0;
 		vrLen = 70;
 		vrLoc = 0;
+	};
+	697286B50F233980007DD0C4 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 69E81F9D0F1C595700357E8D /* TelevisionPro.icns */;
+	};
+	697286B60F233980007DD0C4 /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 69E81F9D0F1C595700357E8D /* TelevisionPro.icns */;
+	};
+	69791B5F0F23461B0021D27E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 695AEE120ECE8B0E00B0E725 /* AppController.rb */;
+		name = "AppController.rb: 198";
+		rLen = 0;
+		rLoc = 4720;
+		rType = 0;
+		vrLen = 694;
+		vrLoc = 1049;
 	};
 	69DCCF790ECEADE7002CDEA6 /* prefectures.yml */ = {
 		uiCtxt = {
@@ -244,10 +253,6 @@
 		vrLen = 144;
 		vrLoc = 0;
 	};
-	69DF49510F20887500FF2A4E /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 69E81F9D0F1C595700357E8D /* TelevisionPro.icns */;
-	};
 	69E81FA00F1C597300357E8D /* PlistBookmark */ = {
 		isa = PlistBookmark;
 		fRef = 4DDCA7110ACC9A6100E082CE /* Info.plist */;
@@ -259,8 +264,14 @@
 		rLen = 0;
 		rLoc = 2147483647;
 	};
-	69E81FA90F1C5BE300357E8D /* PBXBookmark */ = {
-		isa = PBXBookmark;
-		fRef = 69E81F9D0F1C595700357E8D /* TelevisionPro.icns */;
+	69EA73430F2342CB003747C6 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 695AEE120ECE8B0E00B0E725 /* AppController.rb */;
+		name = "AppController.rb: 198";
+		rLen = 0;
+		rLoc = 4720;
+		rType = 0;
+		vrLen = 694;
+		vrLoc = 1049;
 	};
 }

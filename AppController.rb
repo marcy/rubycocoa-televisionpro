@@ -16,7 +16,7 @@ class AppController < OSX::NSObject
   ib_action :push_reload
   ib_action :select_prefecture
   ib_action :search
-  
+
   ib_outlet :window
   ib_outlet :tableView
   ib_outlet :progressIndicator
@@ -24,6 +24,16 @@ class AppController < OSX::NSObject
   ib_outlet :info
   ib_outlet :load
   ib_outlet :summary
+  ib_outlet :search
+
+  def awakeFromNib()
+    d = Time.now
+    @info.setStringValue("#{d.year}/#{d.month}/#{d.day}")
+  end
+
+  def focus_search_box
+    @search.setSelectable(1)
+  end
 
   def search(sender)
     keyword = sender.stringValue.to_s
@@ -45,7 +55,7 @@ class AppController < OSX::NSObject
     set_date
     @tableView.reloadData
   end
-  
+
   def select_prefecture(sender)
     @generater ||= GetProgram.new
     name = sender.stringValue.to_s
@@ -55,21 +65,35 @@ class AppController < OSX::NSObject
   end
 
   def push_time(sender)
-    progress_indicator(sender) do 
-      hour = sender.title.to_s
+    progress_indicator(sender) do
+      @hour = sender.title.to_i
       @generater ||= GetProgram.new
-      @generater.time = hour.to_i
+      @generater.time = @hour
       @program_data = @generater.to_a
       set_date
       @tableView.reloadData
     end
   end
-  
+
+  def down_time(sender)
+    @hour ||= Time.now.hour
+    @hour -= 1
+    @hour = 5 if @hour < 5
+    ch_hour(sender)
+  end
+
+  def up_time(sender)
+    @hour ||= Time.now.hour
+    @hour += 1
+    @hour = 28 if @hour > 28
+    ch_hour(sender)
+  end
+
   def push_reload(sender)
     @prefecture_code ||= ""
     reload_with_progress_indicator(sender)
   end
-  
+
   ## NSTableView dataSource ##
 
   def numberOfRowsInTableView(tableView)
@@ -80,36 +104,36 @@ class AppController < OSX::NSObject
   def tableView_objectValueForTableColumn_row(tableView, tableColumn, row)
     is_even = row.to_i % 2 == 0
     identifier = tableColumn.identifier.to_s
-#    show_data = @program_data[row.to_i/2]
+    #    show_data = @program_data[row.to_i/2]
     show_data = @program_data[row.to_i]
     case identifier
     when "ch"
       return show_data[:ch_title]
-#       if is_even
-#         return show_data[:ch_title]
-#       else
-#         return ""
-#       end
+      #       if is_even
+      #         return show_data[:ch_title]
+      #       else
+      #         return ""
+      #       end
     when "time"
       return show_data[:start_time] + "~" + show_data[:end_time]
-#       if is_even
-#         return show_data[:start_time] + "~" + show_data[:end_time]
-#       else
-#         return ""
-#       end
+      #       if is_even
+      #         return show_data[:start_time] + "~" + show_data[:end_time]
+      #       else
+      #         return ""
+      #       end
     when "show"
       return show_data[:show_title]
-#       if is_even
-#         return show_data[:show_title]
-#       else
-#         return "   >> " + show_data[:summary]
-#       end
+      #       if is_even
+      #         return show_data[:show_title]
+      #       else
+      #         return "   >> " + show_data[:summary]
+      #       end
     end
     return ""
   end
-  
+
   ## NSTableView delegate ##
-  
+
   def tableViewSelectionDidChange(note)
     selected_row = @tableView.selectedRow.to_i
     show_data = @program_data[selected_row]
@@ -131,7 +155,7 @@ class AppController < OSX::NSObject
     end
   end
 
-  private 
+  private
 
   def set_date
     d = Time.now
@@ -158,6 +182,16 @@ class AppController < OSX::NSObject
     @program_data = @generater.to_a
     set_date
     @tableView.reloadData
+  end
+
+  def ch_hour(sender)
+    progress_indicator(sender) do
+      @generater ||= GetProgram.new
+      @generater.time = @hour
+      @program_data = @generater.to_a
+      set_date
+      @tableView.reloadData
+    end
   end
 
 end
