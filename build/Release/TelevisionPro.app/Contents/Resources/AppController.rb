@@ -1,4 +1,4 @@
-# -*- coding: mule-utf-8 -*-
+# -*- coding: utf-8 -*-
 #
 #  AppController.rb
 #  TelevisionPro
@@ -8,7 +8,10 @@
 #
 
 require "get_program.rb"
+require 'PreferenceController'
 
+require 'fileutils'
+require 'pathname'
 require 'osx/cocoa'
 
 class AppController < OSX::NSObject
@@ -16,7 +19,8 @@ class AppController < OSX::NSObject
   ib_action :push_reload
   ib_action :select_prefecture
   ib_action :search
-  
+  # ib_action :prefectures
+
   ib_outlet :window
   ib_outlet :tableView
   ib_outlet :progressIndicator
@@ -24,6 +28,59 @@ class AppController < OSX::NSObject
   ib_outlet :info
   ib_outlet :load
   ib_outlet :summary
+  ib_outlet :search
+  ib_outlet :prefecture
+  # ib_outlet :prefectures_items
+
+  #   def prefectures_items
+  #     @generater ||= GetProgram.new
+  #     @generater.prefectures.values
+  #   end
+
+  attr_reader :my_preference
+
+  def showPreferencePanel (sender)
+    if @preferenceController.nil?
+      @preferenceController = PreferenceController.alloc.init(self)
+    end
+    @preferenceController.showWindow(self)
+    @preferenceController.set_label
+  end
+  ib_action :showPreferencePanel
+
+  def awakeFromNib()
+    @lib_dir = Pathname.new('~/Library/Application Support/TelevisionPro/').expand_path
+    @lib_fname = File.join(@lib_dir, "TelevisionPro.yaml")
+    unless File.exist?(@lib_dir)
+      FileUtils.mkpath(@lib_dir)
+    end
+    if File.exist?(@lib_fname)
+      @my_preference = YAML.load(File.read(@lib_fname))
+    else
+      @my_preference = Hash.new
+      @my_preference["channel_num"] = 7
+      @my_preference["prefecture"] = "東京"
+    end
+
+    d = Time.now
+    @info.setStringValue("#{d.year}/#{d.month}/#{d.day}")
+    @prefecture.setStringValue(@my_preference["prefecture"])
+
+    @generater = GetProgram.new(@my_preference["prefecture"], 
+      @my_preference["channel_num"])
+    @prefecture_code = @generater.prefecture_code(@my_preference["prefecture"])
+  end
+
+  def mypreference(key, value)
+    File.open(@lib_fname, "w") do |f|
+      @my_preference[key] = value
+      YAML.dump(@my_preference, f)
+    end
+  end
+
+  def focus_search_box
+    @search.setSelectable(1)
+  end
 
   def search(sender)
     keyword = sender.stringValue.to_s
@@ -38,38 +95,61 @@ class AppController < OSX::NSObject
     end
   end
 
-  def select_channel_num(sender)
+  def set_channel(channel, sender)
     @generater ||= GetProgram.new
     @generater.channel_num = sender.stringValue.to_i
     @program_data = @generater.to_a
     set_date
     @tableView.reloadData
   end
-  
-  def select_prefecture(sender)
+
+  def select_channel_num(sender)
+    set_channel(sender.stringValue.to_i, sender)
+  end
+
+  def set_prefecture(prefecture_name, sender)
     @generater ||= GetProgram.new
-    name = sender.stringValue.to_s
-    @prefecture_code = @generater.prefecture_code(name)
+    @prefecture_code = @generater.prefecture_code(prefecture_name)
     @prefecture_code = "" if @prefecture_code.nil?
+    @prefecture.setStringValue("#{prefecture_name}の番組表")
     reload_with_progress_indicator(sender)
   end
 
+  def select_prefecture(sender)
+    name = sender.stringValue.to_s
+    set_prefecture(name, sender)
+  end
+
   def push_time(sender)
-    progress_indicator(sender) do 
-      hour = sender.title.to_s
+    progress_indicator(sender) do
+      @hour = sender.title.to_i
       @generater ||= GetProgram.new
-      @generater.time = hour.to_i
+      @generater.time = @hour
       @program_data = @generater.to_a
       set_date
       @tableView.reloadData
     end
   end
-  
+
+  def down_time(sender)
+    @hour ||= Time.now.hour
+    @hour -= 1
+    @hour = 5 if @hour < 5
+    ch_hour(sender)
+  end
+
+  def up_time(sender)
+    @hour ||= Time.now.hour
+    @hour += 1
+    @hour = 28 if @hour > 28
+    ch_hour(sender)
+  end
+
   def push_reload(sender)
     @prefecture_code ||= ""
     reload_with_progress_indicator(sender)
   end
-  
+
   ## NSTableView dataSource ##
 
   def numberOfRowsInTableView(tableView)
@@ -80,40 +160,44 @@ class AppController < OSX::NSObject
   def tableView_objectValueForTableColumn_row(tableView, tableColumn, row)
     is_even = row.to_i % 2 == 0
     identifier = tableColumn.identifier.to_s
-#    show_data = @program_data[row.to_i/2]
+    #    show_data = @program_data[row.to_i/2]
     show_data = @program_data[row.to_i]
     case identifier
     when "ch"
       return show_data[:ch_title]
-#       if is_even
-#         return show_data[:ch_title]
-#       else
-#         return ""
-#       end
+      #       if is_even
+      #         return show_data[:ch_title]
+      #       else
+      #         return ""
+      #       end
     when "time"
       return show_data[:start_time] + "~" + show_data[:end_time]
-#       if is_even
-#         return show_data[:start_time] + "~" + show_data[:end_time]
-#       else
-#         return ""
-#       end
+      #       if is_even
+      #         return show_data[:start_time] + "~" + show_data[:end_time]
+      #       else
+      #         return ""
+      #       end
     when "show"
       return show_data[:show_title]
-#       if is_even
-#         return show_data[:show_title]
-#       else
-#         return "   >> " + show_data[:summary]
-#       end
+      #       if is_even
+      #         return show_data[:show_title]
+      #       else
+      #         return "   >> " + show_data[:summary]
+      #       end
     end
     return ""
   end
-  
+
   ## NSTableView delegate ##
-  
+
   def tableViewSelectionDidChange(note)
     selected_row = @tableView.selectedRow.to_i
     show_data = @program_data[selected_row]
-    str = show_data[:summary]
+    if show_data
+      str = show_data[:summary]
+    else
+      str = ""
+    end
     @summary.setStringValue(str)
   end
 
@@ -131,7 +215,15 @@ class AppController < OSX::NSObject
     end
   end
 
-  private 
+  private
+
+  def reload
+    @generater ||= GetProgram.new
+    @generater.read_data(@prefecture_code)
+    @program_data = @generater.to_a
+    set_date
+    @tableView.reloadData
+  end
 
   def set_date
     d = Time.now
@@ -141,7 +233,6 @@ class AppController < OSX::NSObject
   end
 
   def reload_with_progress_indicator(sender)
-    @load.setTitle("再読み込み")
     progress_indicator(sender) do
       reload
     end
@@ -153,12 +244,14 @@ class AppController < OSX::NSObject
     @progressIndicator.stopAnimation(sender)
   end
 
-  def reload
-    @generater ||= GetProgram.new
-    @generater.read_data(@prefecture_code)
-    @program_data = @generater.to_a
-    set_date
-    @tableView.reloadData
+  def ch_hour(sender)
+    progress_indicator(sender) do
+      @generater ||= GetProgram.new
+      @generater.time = @hour
+      @program_data = @generater.to_a
+      set_date
+      @tableView.reloadData
+    end
   end
 
 end
