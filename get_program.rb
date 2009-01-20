@@ -64,13 +64,15 @@ class GetProgram
   attr_writer :channel_num
   attr_reader :prefectures
 
-  def initialize(prefecture_code="", channel_num=7)
+  def initialize(prefecture_name="", channel_num=7)
     yml = File.join(File.dirname(__FILE__), "./prefectures.yml")
     @prefectures = YAML::load(File.read(yml))
     @time = Time.now.hour
     @channel_num = channel_num
-    if prefecture_code.empty?
-      read_data(prefecture_code)
+    if prefecture_name.empty?
+      read_data
+    else
+      read_data(prefecture_code(prefecture_name))
     end
   end
   
@@ -98,6 +100,10 @@ class GetProgram
 
   def prefecture_code(name)
     @prefectures[name]
+  end
+
+  def prefecture_name(code)
+    @prefectures.key(name)
   end
 
   def read_data(prefecture_code="")

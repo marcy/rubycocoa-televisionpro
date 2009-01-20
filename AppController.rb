@@ -14,6 +14,8 @@ require 'fileutils'
 require 'pathname'
 require 'osx/cocoa'
 
+$KCODE = 'UTF8'
+
 class AppController < OSX::NSObject
   ib_action :push_time
   ib_action :push_reload
@@ -54,12 +56,16 @@ class AppController < OSX::NSObject
     unless File.exist?(@lib_dir)
       FileUtils.mkpath(@lib_dir)
     end
+    yaml = nil
     if File.exist?(@lib_fname)
-      @my_preference = YAML.load(File.read(@lib_fname))
-    else
+      yaml = File.read(@lib_fname)
+    end
+    if yaml.nil? or yaml.empty?
       @my_preference = Hash.new
       @my_preference["channel_num"] = 7
       @my_preference["prefecture"] = "東京"
+    else
+      @my_preference = YAML.load(yaml)
     end
 
     d = Time.now
@@ -68,13 +74,17 @@ class AppController < OSX::NSObject
 
     @generater = GetProgram.new(@my_preference["prefecture"], 
       @my_preference["channel_num"])
-    @prefecture_code = @generater.prefecture_code(@my_preference["prefecture"])
+    @prefecture_code = @my_preference["prefecture"]
+    @program_data = @generater.to_a
+    @tableView.reloadData
   end
 
   def mypreference(key, value)
     File.open(@lib_fname, "w") do |f|
       @my_preference[key] = value
-      YAML.dump(@my_preference, f)
+      @my_preference.each do |key, value|
+        f.write("#{key}: #{value}\n")
+      end
     end
   end
 
