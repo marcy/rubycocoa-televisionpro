@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
+#
+#  AppController.rb
+#  TelevisionPro
+#
+#  Created by Masashi Oyamada on 08/11/15.
+#  Copyright (c) 2008 Masashi Oyamada All rights reserved.
+#
 
 require 'osx/cocoa'
 
 class PreferenceController < OSX::NSWindowController
   include OSX
 
-  Default_Label = "環境設定してください"
+  # Default_Label = "環境設定してください"
 
   ib_outlet :channel_num
   ib_outlet :select_prefecture
