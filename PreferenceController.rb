@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#  AppController.rb
+#  PreferenceController.rb
 #  TelevisionPro
 #
 #  Created by Masashi Oyamada on 08/11/15.
